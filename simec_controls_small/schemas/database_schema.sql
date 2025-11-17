@@ -1,0 +1,2 @@
+-- Database schema placeholder (Phase 1 UI focuses on shell only).
+-- Future migrations and tables will be added here.

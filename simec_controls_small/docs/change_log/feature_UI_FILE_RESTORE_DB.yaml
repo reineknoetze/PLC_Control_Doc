@@ -1,0 +1,65 @@
+---
+FeatureID: UI-FILE-RESTORE-DB-2025-10-28
+Title: Restore Backup Database
+Component:
+  - simec_controls.ui.main_window
+  - simec_controls.ui.menu_bar
+Status: Implemented and Verified
+AuthoringContext: SCADA Control System Documentation – DLIMS Integration Study
+DateImplemented: 2025-10-28
+VersionIntroduced: v1.3.0-ui-db-restore
+TestedIn: Portable WinPython 3.12 + Spyder environment
+VerificationTimestamp: 2025-10-28T13:45+10:30
+AuditedBy: ChatGPT-5 / Reine Knoetze
+Purpose: >
+  Provides a safe and user-controlled mechanism to restore a previously created SQLite
+  database backup file (*_bakNNN.sqlite) as the current working database (<stem>.sqlite)
+  through the application UI, ensuring deterministic rollback and filename integrity.
+DesignSummary:
+  Trigger: File → Restore Backup Database…
+  DialogType: QFileDialog (modal, constrained to db folder, single file, filter *_bak???.sqlite)
+  PreConditions: DatabaseManager loaded; UI active; backup file exists
+  PostConditions: Working DB replaced; deprecated working renamed <stem>_dep[_{ISO}].sqlite; integrity revalidated
+  ErrorHandling: All steps wrapped in try/except with rollback and user dialogs
+  FilenameIntegrity: Enforced by DatabaseManager.validate_filename_integrity()
+  AtomicRename: In same directory; rollback on failure
+FilesModified:
+  - src/simec_controls/ui/menu_bar.py
+  - src/simec_controls/ui/main_window.py
+ImplementationDetails:
+  menu_bar.py:
+    - Added Restore Backup Database QAction
+    - Runtime dispatcher invokes handler safely
+  main_window.py:
+    - Added _on_restore_backup_database() inside MainWindow class
+    - Integrated with _on_new_database, _on_open_database, _on_close_database
+    - Retained DatabaseManager semantics
+    - Proper placement before closeEvent
+SupportingInfrastructure:
+  - DatabaseManager.open()
+  - DatabaseManager.close_with_backup()
+  - DatabaseManager.validate_filename_integrity()
+BehavioralValidationChecklist:
+  - TestCase: Restore invoked with valid *_bakNNN.sqlite
+    Expected: Working DB replaced; prior working renamed _dep.sqlite; success message shown
+    Status: Pass
+  - TestCase: Restore invoked with missing/invalid file
+    Expected: Error dialog; no file changes
+    Status: Pass
+  - TestCase: Integrity mismatch in restored DB
+    Expected: Critical error; rollback; state restored
+    Status: Pass
+  - TestCase: No current DB open before restore
+    Expected: Backup promoted directly; validated
+    Status: Pass
+  - TestCase: Cancelled dialog
+    Expected: No side effects
+    Status: Pass
+ChangeControl:
+  CommitContext: feature/ui_restore_backup_database
+  ChangeType: Feature Addition
+NextIntegrationSteps:
+  - Update README and Help→About to include restore capability
+  - Add retention policy enforcement in Integration_Charter.yaml
+  - Create pytest-qt automated test in tests/ui/test_restore_database.py
+...

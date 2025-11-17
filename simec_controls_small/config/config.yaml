@@ -1,0 +1,4 @@
+# SIMEC Controls — Optional configuration
+# If omitted, the application resolves schema_root relative to the project root.
+schemas:
+  schema_root: "./schemas/json_schemas"

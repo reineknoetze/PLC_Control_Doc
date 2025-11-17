@@ -1,0 +1,22 @@
+
+<RSLogix5000Content SchemaRevision="1.0">
+  <Controller Name="HPGR1">
+    <Programs>
+      <Program Name="MainProgram" Description="Main">
+        <Routines>
+          <Routine Name="MainRoutine" Type="RLL">
+            <RLLContent/>
+          </Routine>
+        </Routines>
+      </Program>
+    </Programs>
+    <Tags>
+      <Tag Name="StartCmd" DataType="BOOL">
+        <Data><Value>0</Value></Data>
+      </Tag>
+    </Tags>
+  </Controller>
+  <AddOnInstructionDefinitions>
+    <AddOnInstructionDefinition Name="AOI_Pump"/>
+  </AddOnInstructionDefinitions>
+</RSLogix5000Content>

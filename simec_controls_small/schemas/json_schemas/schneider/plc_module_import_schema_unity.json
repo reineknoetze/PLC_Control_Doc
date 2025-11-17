@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Schneider Unity Root",
+  "type": "object",
+  "properties": {
+    "root_tag": {
+      "const": "UnityProject"
+    }
+  },
+  "required": [
+    "root_tag"
+  ]
+}
